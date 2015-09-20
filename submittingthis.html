@@ -1,0 +1,167 @@
+<html>
+<head>
+<script type="text/javascript">
+
+function loadXML(url) 
+{ 
+
+  if(is_all_blank(url))
+  alert("URL field empty!");
+  else
+  {
+  if (window.XMLHttpRequest)
+  {
+       xmlhttp=new XMLHttpRequest();
+  }
+  else
+  {
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  try
+  {
+   xmlhttp.open("GET",url,false);
+   xmlhttp.send(); 
+  }
+  catch(e)
+  {
+   alert("File not found. Enter existing file name");
+  }
+  if(xmlhttp.status == 404)
+  {
+   alert("File not found. Enter existing file name");
+  }
+  else
+  {
+   xmlDoc=xmlhttp.responseXML; 
+   return xmlDoc;
+  }
+  } 
+}
+
+function is_all_ws( nod )
+{
+  return !(/[^\t\n\r ]/.test(nod.textContent));
+}
+
+function is_all_blank(def)
+{
+  return !(/[^\t\n\r ]/.test(def));
+}
+
+function xmlparse(abc) 
+{
+adi=abc.url_name.value;
+xmlDoc = loadXML(adi);
+    if(window.ActiveXobject)
+    {
+        if(xmlDoc.parseError.errorCode !=0)
+        {
+            var Error=xmlDoc.parseError;
+            generateError(xmlDoc);
+            alert("Error in XML file!");
+        }
+    }
+ else
+ if (xmlDoc.documentElement.nodeName=="parsererror")
+ {
+        alert("Error in XML file! Document not wellformed!!");
+ }
+    else
+    {
+       var html ="";
+       html+="<html><head></head><bo";
+        html+="dy>";
+	    html+=("<table border='2' align='center'>");
+        var root1= xmlDoc.documentElement;
+        var root2=root1.children;
+
+        for( var i=0;i<root2.length;i++)
+        {
+        root3=root2[i].children;
+           for( var j=0;j<root3.length;j++)
+	        {
+             root4=root3[j].children;
+             count=root4.length;
+             for( var k=0;k<root4.length;k++)
+             {
+             html+=("<tr>");
+             root5=root4[k].children;
+                  for(var x=0;x<root5.length;x++)
+                  {   
+                      if(k===0)
+                      {
+                      bsp=is_all_ws(root5[x]);
+                      if(bsp===true)
+                      {
+                      html+=("<th>N.A</th>");
+                      }
+                          else	
+                        {
+                      html+=("<th>"+root5[x].textContent+"</th>");
+                        }
+                      }
+                      else
+                      {
+                         
+                         bsp=is_all_ws(root5[x]);
+                         if(bsp===true)
+                         html+="(<td>N.A</td>)";
+                         else
+                         if(x==6)
+                         html+=("<td>"+"<img src="+root5[x].textContent+" width='150' height='150'/>"+"</td>");
+                         else
+                         if(x==5)
+                         html+=("<td><a href="+root5[x].textContent+">link to"+"<br />"+"company</a></td>");
+                         else
+                         html+=("<td>"+root5[x].textContent+"</td>");
+                       
+                      }
+                   
+                  }
+             }
+           }
+        }
+html+=("</tr>");
+html+=("</table></bo");
+html+= ("dy></html>");  
+if(count===1)
+alert("No companies listed");
+else
+{
+hWin=window.open("","xml_hw_4","scrollbars=1,height=800,width=800");
+hWin.document.write(html);
+}
+}
+
+}
+
+</script>
+<style>
+    ab{
+        position: absolute;
+       color : #000000;
+   <!-- text-align : "center";-->
+    font-family: "Georgia",serif;
+    font-size: 24px;
+        top:360px;
+            left:600px;
+    
+   <!-- top: 5em;-->
+    }
+        .abcd{
+            position: absolute;
+           top: 400px;
+            left:700px;
+    </style>
+</head>
+<body>
+<ab>Enter URL for Company List XML file</ab>
+<form class="abcd" name="form" method="GET" id="siteurl1">
+<input type="text" name="url_name"/>
+<br /> &nbsp;&nbsp;&nbsp;
+<input type="button" name="submit" value="Submit Query" onClick="xmlparse(this.form)"/>
+<noscript>
+</div>
+</body>
+</html> 
+
